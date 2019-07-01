@@ -13,6 +13,7 @@ import java.util.List;
  * @date 2019/6/2016:32
  */
 public class ResultUtil {
+
     private static ResultDTO<Object> successResult = new ResultDTO<Object>(true, null,
             CommonMessageEnum.SUCCESS.getMsg(), CommonMessageEnum.SUCCESS.getCode(), 0);
 

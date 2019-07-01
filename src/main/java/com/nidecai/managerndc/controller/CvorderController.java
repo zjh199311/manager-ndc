@@ -1,18 +1,17 @@
 package com.nidecai.managerndc.controller;
-
 import com.github.pagehelper.PageInfo;
 import com.nidecai.managerndc.common.annoation.ConvenientStore;
+import com.nidecai.managerndc.common.codeutil.CommonMessageEnum;
 import com.nidecai.managerndc.common.codeutil.GsonUtil;
 import com.nidecai.managerndc.common.codeutil.ResultUtil;
 import com.nidecai.managerndc.entity.Cvorder;
-import com.nidecai.managerndc.entity.OrderAddress;
 import com.nidecai.managerndc.service.CvorderService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import javax.persistence.Id;
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author river
@@ -22,7 +21,7 @@ import javax.servlet.http.HttpServletRequest;
  * @date 2019/6/2013:30
  */
 @RestController
-@RequestMapping(value = "/orderList", method = RequestMethod.GET)
+@RequestMapping(value = "/orderList")
 public class CvorderController {
     private static final long serialVersionUID = 1L;
     private static Logger log = Logger.getLogger(CvorderController.class);
@@ -30,7 +29,7 @@ public class CvorderController {
     private CvorderService cvorderService;
 
     //查询全部订单
-    @RequestMapping(value = "/pageList")
+    @RequestMapping(value = "/pageList" ,method = RequestMethod.GET)
     @ConvenientStore(value = "marketStatistics")
     public String listOrder(HttpServletRequest request) {
         String pageStr = request.getParameter("page");
@@ -42,5 +41,86 @@ public class CvorderController {
         return GsonUtil.GsonString(ResultUtil.getSuccess(orderList));
     }
 
-    //修改订单
+
+    //根据订单id查询
+    @RequestMapping(value = "/orderId", method = RequestMethod.GET)
+    @ConvenientStore(value = "marketManage")
+    public String getOneById(HttpServletRequest request) {
+        String cvorderId = request.getParameter("id");
+        int id = Integer.parseInt(cvorderId);
+        Cvorder cvorder = cvorderService.getOneById(id);
+        try {
+            if (cvorder!=null) {
+                return GsonUtil.GsonString(ResultUtil.getSuccess(cvorder));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return GsonUtil.GsonString(ResultUtil.getFail(CommonMessageEnum.SERVERERR));
+    }
+
+    //根据订单id删除
+    @RequestMapping(value = "/selectId", method = RequestMethod.GET)
+    @ConvenientStore(value = "shopManage")
+    public String deleteId(HttpServletRequest request) {
+        String cvorderId = request.getParameter("id");
+        int id = Integer.parseInt(cvorderId);
+        int i = cvorderService.deleteId(id);
+        try {
+            if (i > 0) {
+                return  GsonUtil.GsonString(ResultUtil.getSuccess(null));
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return GsonUtil.GsonString(ResultUtil.getFail(null));
+    }
+
+    //根据订单id进行批量删除
+    @RequestMapping(value = "/deleteIds", method = RequestMethod.GET)
+    @ConvenientStore(value = "orderShop")
+    public String deleteIds(HttpServletRequest request) {
+        String[] cvorderId = request.getParameterValues("cvorderArrayId[]");
+        if (cvorderId != null && cvorderId.length != 0) {
+            List<Integer> cvorderList = null;
+            for (String cvorderIdValue : cvorderId) {
+                int id = Integer.parseInt(cvorderIdValue);
+                cvorderList = new ArrayList<Integer>();
+                cvorderList.add(id);
+            }
+            try {
+                int i = cvorderService.deleteIds(cvorderList);
+                if (i > 0) {
+                    return  GsonUtil.GsonString(ResultUtil.getSuccess(null));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return GsonUtil.GsonString(ResultUtil.getFail(CommonMessageEnum.SERVERERR));
+    }
+
+
+    //根据订单分配给指定的骑手
+    @RequestMapping(value = "/updateRider", method = RequestMethod.GET)
+    @ConvenientStore(value = "orderRider")
+    public String updateRiderUser(HttpServletRequest request) {
+        //骑手的id
+        String ridId = request.getParameter("rid");
+        int ridUserId = Integer.parseInt(ridId);
+        String id = request.getParameter("id");
+        int cvOrderId = Integer.parseInt(id);
+        int i = cvorderService.updateRiderUser(ridUserId, cvOrderId);
+        try {
+            if (i > 0) {
+                return  GsonUtil.GsonString(ResultUtil.getSuccess(null));
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return GsonUtil.GsonString(ResultUtil.getFail(null));
+
+    }
 }

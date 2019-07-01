@@ -12,7 +12,7 @@ public class Cvorder implements Serializable {
     @Column(name = "id")
     private Integer id;
 
-    //用户订单信息
+    //用户订单信息(一对一)
     @Transient
     private  OrderAddress orderAddress;
 
@@ -22,6 +22,17 @@ public class Cvorder implements Serializable {
 
     public void setOrderAddress(OrderAddress orderAddress) {
         this.orderAddress = orderAddress;
+    }
+
+    //订单对应的骑手(一对一)
+    private RiderUser riderUser;
+
+    public RiderUser getRiderUser() {
+        return riderUser;
+    }
+
+    public void setRiderUser(RiderUser riderUser) {
+        this.riderUser = riderUser;
     }
 
     /**

@@ -2,6 +2,10 @@ package com.nidecai.managerndc.service;
 
 import com.github.pagehelper.PageInfo;
 import com.nidecai.managerndc.entity.Cvorder;
+import com.nidecai.managerndc.entity.OrderAddress;
+import com.nidecai.managerndc.entity.RiderUser;
+
+import java.util.List;
 
 /**
  * @author river
@@ -12,5 +16,13 @@ import com.nidecai.managerndc.entity.Cvorder;
  */
 
 public interface CvorderService {
-    PageInfo<Cvorder> getOrderList(Cvorder cvorder,int page,int size);
+    PageInfo<Cvorder> getOrderList(Cvorder cvorder, int page, int size);
+
+    Cvorder getOneById(int id);
+
+    int deleteId(int id);
+
+    int deleteIds(List<Integer> cvorderList);
+
+    int updateRiderUser(int ridUserId,int cvOrderId);
 }
