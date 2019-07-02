@@ -40,14 +40,23 @@ public class CvorderServiceImpl implements CvorderService {
         for (Cvorder cvCvorder : cvorderList) {
             Example exampleAddress = new Example(OrderAddress.class);
             Example.Criteria criteriaAddress = exampleAddress.createCriteria();
+            criteriaAddress.andEqualTo("riderSn",cvCvorder.getOrderSn());
             List<OrderAddress> orderAddresses = orderAddressMapper.selectByExample(exampleAddress);
             Example exampleRiderUser = new Example(RiderUser.class);
             Example.Criteria criteriaRiderUser = exampleRiderUser.createCriteria();
+            criteriaRiderUser.andEqualTo("rid",cvCvorder.getRid());
             List<RiderUser> riderUsers = riderUserMapper.selectByExample(exampleRiderUser);
+            Example exampleCvuserOrder = new Example(CvuserOrder.class);
+            Example.Criteria criteriaCvuserOrder = exampleCvuserOrder.createCriteria();
+            criteriaCvuserOrder.andEqualTo("orderSn",cvCvorder.getOrderSn());
+            List<CvuserOrder> cvuserOrders = cvuserOrderMapper.selectByExample(exampleCvuserOrder);
             for (OrderAddress address : orderAddresses) {
                 for (RiderUser cVriderUser : riderUsers) {
-                    cvCvorder.setOrderAddress(address);
-                    cvCvorder.setRiderUser(cVriderUser);
+                    for (CvuserOrder cvuserOrder : cvuserOrders) {
+                          cvCvorder.setOrderAddress(address);
+                          cvCvorder.setRiderUser(cVriderUser);
+                          cvCvorder.setCvuserOrder(cvuserOrder);
+                    }
                 }
             }
         }

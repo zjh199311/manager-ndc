@@ -25,6 +25,7 @@ public class Cvorder implements Serializable {
     }
 
     //订单对应的骑手(一对一)
+    @Transient
     private RiderUser riderUser;
 
     public RiderUser getRiderUser() {
@@ -33,6 +34,17 @@ public class Cvorder implements Serializable {
 
     public void setRiderUser(RiderUser riderUser) {
         this.riderUser = riderUser;
+    }
+    //用户购买详细信息(一对一)
+    @Transient
+    private  CvuserOrder cvuserOrder;
+
+    public CvuserOrder getCvuserOrder() {
+        return cvuserOrder;
+    }
+
+    public void setCvuserOrder(CvuserOrder cvuserOrder) {
+        this.cvuserOrder = cvuserOrder;
     }
 
     /**
